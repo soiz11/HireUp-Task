@@ -1,7 +1,9 @@
 "use client";
 import { IoIosArrowDown } from "react-icons/io";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 //all the click handlesr should issolated to seperate client components
 //but in here i place all the components and others in same file
@@ -29,11 +31,20 @@ const faqs = [
 const Faq = () => {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
-  const [inputValue, setInputValue] = useState("");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const search = searchParams.get("search") || "";
+
+  const [inputValue, setInputValue] = useState(search);
+  console.log(inputValue);
 
   const handleToggle = (index) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
+
+  useEffect(() => {
+    router.push(`?search=${inputValue}`);
+  }, [inputValue, router]);
 
   const HandleToggleAll = () => {};
 
@@ -54,10 +65,12 @@ const Faq = () => {
           ref={inputRef}
           placeholder="Search Your Problem"
         />
-        <IoIosSearch
-          className="text-indigo-500 2xl:size-[30px] size-[25px]"
-          onClick={() => inputRef.current.focus()}
-        />
+        <Link href={`?search=${inputValue}`}>
+          <IoIosSearch
+            className="text-indigo-500 2xl:size-[30px] size-[25px]"
+            onClick={() => inputRef.current.focus()}
+          />
+        </Link>
       </div>
 
       <div className="text-[70px] font-semibold">FAQ</div>
