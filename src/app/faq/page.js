@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { GoCircle } from "react-icons/go";
 
 //all the click handlesr should issolated to seperate client components
 //but in here i place all the components and others in same file
@@ -29,24 +30,34 @@ const faqs = [
 //main component
 
 const Faq = () => {
-  const [expandedIndex, setExpandedIndex] = useState(null);
+  const [expandedIndices, setExpandedIndices] = useState([]);
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const search = searchParams.get("search") || "";
+  console.log(search);
 
+  //in here im not using debounce technique to search in case of instant search
   const [inputValue, setInputValue] = useState(search);
   console.log(inputValue);
 
   const handleToggle = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+    setExpandedIndices((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
+
+  const HandleToggleAll = () => {
+    if (expandedIndices.length === selectedArray.length) {
+      setExpandedIndices([]);
+    } else {
+      setExpandedIndices(selectedArray.map((_, index) => index));
+    }
   };
 
   useEffect(() => {
     router.push(`?search=${inputValue}`);
   }, [inputValue, router]);
-
-  const HandleToggleAll = () => {};
 
   const inputRef = useRef(null);
 
@@ -55,6 +66,7 @@ const Faq = () => {
 
   const selectedArray = inputValue == "" ? faqs : filterdArray;
 
+  console.log(expandedIndices.length);
   return (
     <div className="flex relative flex-col gap-y-8 items-center justify-center w-full min-h-screen bg-gradient-radial from-white to-indigo-500">
       <div className="flex  top-[10%] 2xl:right-[30%] right-[5%] 2xl:left-[30%] left-[5%] absolute md:px-5 px-3 2xl:py-2 py-1 bg-white rounded-md shadow-xl">
@@ -64,6 +76,7 @@ const Faq = () => {
           onChange={(e) => setInputValue(e.target.value)}
           ref={inputRef}
           placeholder="Search Your Problem"
+          value={inputValue}
         />
         <Link href={`?search=${inputValue}`}>
           <IoIosSearch
@@ -81,7 +94,7 @@ const Faq = () => {
             key={index}
             quiz={qu.question}
             answer={qu.answer}
-            isExpanded={expandedIndex == index}
+            isExpanded={expandedIndices.includes(index)}
             onToggle={() => handleToggle(index)}
           />
         ))}
@@ -92,10 +105,14 @@ const Faq = () => {
         )}
       </div>
       <div
-        className="absolute bottom-[10%] right-[10%]"
+        className="absolute bottom-[15%] 2xl:right-[30%] right-[5%] bg-white rounded-md p-2 shadow-custom size-[50px] flex items-center justify-center"
         onClick={HandleToggleAll}
       >
-        all
+        <GoCircle
+          className={`text-indigo-500 rounded-full transition-all duration-500 ${
+            expandedIndices.length === 0 ? "text-[35px]" : "text-[25px]"
+          }`}
+        />
       </div>
     </div>
   );
