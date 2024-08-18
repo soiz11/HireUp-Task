@@ -17,3 +17,10 @@ To run this project locally, follow these steps:
 
    ```bash
    npm i
+   
+2. **Run the project:**
+
+   Run the following command to run the project:
+
+   ```bash
+   npm run dev
