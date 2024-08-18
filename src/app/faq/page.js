@@ -131,29 +131,37 @@ export default Faq;
 // QuizBox Component
 const QuizBox = ({ quiz, answer, isExpanded, onToggle }) => {
   return (
-    <div className="flex flex-col w-full shadow-md">
-      <div
-        className={`${
-          isExpanded ? "rounded-t-md" : "rounded-md"
-        } md:px-5 px-3 py-2 flex justify-between items-center bg-white`}
-        onClick={onToggle}
-      >
-        <div className="font-semibold md:text-[18px] text-[14px]">{quiz}</div>
-        <IoIosArrowDown
+    <Suspense
+      fallback={
+        <div className="text-indigo-500 bg-white px-5 py-2 rounded-md">
+          Loading...
+        </div>
+      }
+    >
+      <div className="flex flex-col w-full shadow-md">
+        <div
           className={`${
-            isExpanded ? "rotate-180" : "rotate-0"
-          } duration-500 transition-all w-[20px]`}
-        />
+            isExpanded ? "rounded-t-md" : "rounded-md"
+          } md:px-5 px-3 py-2 flex justify-between items-center bg-white`}
+          onClick={onToggle}
+        >
+          <div className="font-semibold md:text-[18px] text-[14px]">{quiz}</div>
+          <IoIosArrowDown
+            className={`${
+              isExpanded ? "rotate-180" : "rotate-0"
+            } duration-500 transition-all w-[20px]`}
+          />
+        </div>
+        <div
+          className={`${
+            isExpanded
+              ? "h-auto opacity-100 py-2 border-t-2 border-indigo-300"
+              : "h-0 opacity-0"
+          } w-full bg-white text-gray-700 font-light transition-all duration-500 rounded-b-md px-5 overflow-hidden md:text-[16px] text-[12px]`}
+        >
+          {answer}
+        </div>
       </div>
-      <div
-        className={`${
-          isExpanded
-            ? "h-auto opacity-100 py-2 border-t-2 border-indigo-300"
-            : "h-0 opacity-0"
-        } w-full bg-white text-gray-700 font-light transition-all duration-500 rounded-b-md px-5 overflow-hidden md:text-[16px] text-[12px]`}
-      >
-        {answer}
-      </div>
-    </div>
+    </Suspense>
   );
 };
